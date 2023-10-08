@@ -1,11 +1,13 @@
-clone:
-  git:
+skip_clone: true
+
+steps:
+  upstream:
+    when:
+      - event: tag
     image: woodpeckerci/plugin-git
     settings:
       depth: 1
       remote: https://github.com/mozilla-mobile/firefox-android.git
-
-steps:
   build:
     when:
       - event: tag
