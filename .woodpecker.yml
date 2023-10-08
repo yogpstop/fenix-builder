@@ -41,7 +41,7 @@ steps:
       - apk add --no-cache git
       - UPSTREAM=`git ls-remote --tags https://github.com/mozilla-mobile/firefox-android.git | awk '/fenix-v[0-9.]+$/{print $2}' | sort -Vr | head -1`
       - CURRENT=`git ls-remote --tags "$CI_REPO_CLONE_URL" | awk '/fenix-v[0-9.]+$/{print $2}' | sort -Vr | head -1`
-      - [ "$UPSTREAM" != "$CURRENT" ] || exit 0
+      - '[ "$UPSTREAM" != "$CURRENT" ] || exit 0'
       - git clone --depth=1 "$CI_REPO_CLONE_URL" .
       - git tag "$UPSTREAM"
       - git push origin "$UPSTREAM"
