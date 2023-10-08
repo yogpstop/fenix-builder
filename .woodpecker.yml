@@ -26,7 +26,7 @@ steps:
       - echo "$SIGN_STORE_DATA" | base64 -d >"$HOME/.android/debug.keystore"
       - cd fenix
       - sed -zi 's/\.aboutConfigEnabled([^()]\+)/.aboutConfigEnabled(true)/' app/src/main/java/org/mozilla/fenix/gecko/GeckoProvider.kt
-      - sed -i "/org\.gradle\.jvmargs/s/=.*/=-XX:+UseParallelGC/" gradle.properties
+      - sed -i "/org\.gradle\.jvmargs/s/=.*/=-Xmx1g -XX:+UseParallelGC/" gradle.properties
       - echo "org.gradle.daemon=false" | tee -a gradle.properties
       - echo "autosignReleaseWithDebugKey" | tee -a local.properties
       - ./gradlew assembleRelease
