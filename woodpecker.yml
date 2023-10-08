@@ -1,12 +1,11 @@
-steps:
-  upstream:
-    when:
-      - event: tag
+clone:
+  git:
     image: woodpeckerci/plugin-git
     settings:
       depth: 1
       remote: https://github.com/mozilla-mobile/firefox-android.git
-      path: ${CI_WORKSPACEi}/firefox-android
+
+steps:
   build:
     when:
       - event: tag
@@ -23,7 +22,7 @@ steps:
       - echo 24333f8a63b6825ea9c5514f83c2829b004d1fee | tee "$ANDROID_HOME/licenses/android-sdk-license"
       - mkdir -p "$HOME/.android"
       - echo "$SIGN_STORE_DATA" | base64 -d >"$HOME/.android/debug.keystore"
-      - cd firefox-android/fenix
+      - cd fenix
       - sed -zi 's/\.aboutConfigEnabled([^()]\+)/.aboutConfigEnabled(true)/' app/src/main/java/org/mozilla/fenix/gecko/GeckoProvider.kt
       - echo "autosignReleaseWithDebugKey" | tee -a local.properties
       - ./gradlew assembleRelease
