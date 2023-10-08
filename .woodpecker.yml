@@ -26,6 +26,6 @@ steps:
       - sed -zi 's/\.aboutConfigEnabled([^()]\+)/.aboutConfigEnabled(true)/' app/src/main/java/org/mozilla/fenix/gecko/GeckoProvider.kt
       - echo "autosignReleaseWithDebugKey" | tee -a local.properties
       - ./gradlew assembleRelease
-      - curl -X POST -H "Authorization: Bearer $DEPLOYGATE_TOKEN" -F "file=@app/build/outputs/apk/fenix/release/app-fenix-arm64-v8a-release.apk" https://deploygate.com/api/users/yogpstop/apps
+      - curl -X POST -H "Authorization: Bearer $DEPLOYGATE_TOKEN" -F "file=@app/build/outputs/apk/fenix/release/app-fenix-arm64-v8a-release.apk" "https://deploygate.com/api/users/yogpstop/apps"
       - shred -u "$HOME/.android/debug.keystore"
     secrets: [ sign_store_data, deploygate_token ]
