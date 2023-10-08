@@ -1,0 +1,31 @@
+clone:
+  git:
+    image: woodpeckerci/plugin-git
+    settings:
+      depth: 1
+      remote: https://github.com/mozilla-mobile/firefox-android.git
+
+steps:
+  build:
+    when:
+      - event: tag
+    image: eclipse-temurin:17
+    environment:
+      - GRADLE_USER_HOME=/woodpecker/.gradle
+      - ANDROID_HOME=/woodpecker/android-sdk
+    commands:
+      - apt update
+      - apt -y install --no-install-recommends unzip bzip2 git
+      - wget -q -O commandlinetools-linux.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+      - unzip -q commandlinetools-linux.zip -d "$ANDROID_HOME"
+      - mkdir "$ANDROID_HOME/licenses"
+      - echo 24333f8a63b6825ea9c5514f83c2829b004d1fee | tee "$ANDROID_HOME/licenses/android-sdk-license"
+      - mkdir -p "$HOME/.android"
+      - echo "$SIGN_STORE_DATA" | base64 -d >"$HOME/.android/debug.keystore"
+      - cd fenix
+      - sed -zi 's/\.aboutConfigEnabled([^()]\+)/.aboutConfigEnabled(true)/' app/src/main/java/org/mozilla/fenix/gecko/GeckoProvider.kt
+      - echo "autosignReleaseWithDebugKey" | tee -a local.properties
+      - ./gradlew assembleRelease
+      - curl -X POST -H "Authorization: Bearer $DEPLOYGATE_TOKEN" -F file=@app/build/outputs/apk/fenix/release/app-fenix-arm64-v8a-release.apk https://deploygate.com/api/users/yogpstop/apps
+      - shred -u "$HOME/.android/debug.keystore"
+    secrets: [ sign_store_data, deploygate_token ]
