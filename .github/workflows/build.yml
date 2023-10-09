@@ -32,7 +32,7 @@ jobs:
           git config --global --add safe.directory "$(pwd)"
           cd fenix
           sed -zi 's/\.aboutConfigEnabled([^()]\+)/.aboutConfigEnabled(true)/' app/src/main/java/org/mozilla/fenix/gecko/GeckoProvider.kt
-          sed -i "/org\.gradle\.jvmargs/{s/7g/4g/;s/6g/1g/}" gradle.properties
+          sed -i "/org\.gradle\.jvmargs/{s/7g/3g/;s/6g/512m/}" gradle.properties
           echo "org.gradle.daemon=false" | tee -a gradle.properties
           echo "autosignReleaseWithDebugKey" | tee -a local.properties
           ./gradlew assembleRelease
