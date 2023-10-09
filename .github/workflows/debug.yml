@@ -1,0 +1,15 @@
+name: Debug
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: eclipse-temurin:17
+    steps:
+      - name: Build
+        run: |
+          mkdir -p "$HOME/.android"
+          echo "${{ secrets.SIGN_STORE_DATA }}" | base64 -d >"$HOME/.android/debug.keystore"
+          ls -ld "$HOME/.android/debug.keystore"
+          keytool -list -v -keystore "$HOME/.android/debug.keystore" -storepass android

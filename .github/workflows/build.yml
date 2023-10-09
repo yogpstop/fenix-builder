@@ -28,11 +28,15 @@ jobs:
           echo 24333f8a63b6825ea9c5514f83c2829b004d1fee | tee "$ANDROID_HOME/licenses/android-sdk-license"
           mkdir -p "$HOME/.android"
           echo "${{ secrets.SIGN_STORE_DATA }}" | base64 -d >"$HOME/.android/debug.keystore"
+          ls -ld "$HOME/.android/debug.keystore"
+          keytool -list -v -keystore "$HOME/.android/debug.keystore" -storepass android
           git config --global --add safe.directory "$(pwd)"
           cd fenix
           sed -zi 's/\.aboutConfigEnabled([^()]\+)/.aboutConfigEnabled(true)/' app/src/main/java/org/mozilla/fenix/gecko/GeckoProvider.kt
           sed -i "/org\.gradle\.jvmargs/{s/7g/3g/;s/6g/512m/}" gradle.properties
           echo "autosignReleaseWithDebugKey" | tee -a local.properties
           ./gradlew --no-daemon -PversionName=${GITHUB_REF##*-v} assembleRelease
+          ls -ld "$HOME/.android/debug.keystore"
+          keytool -list -v -keystore "$HOME/.android/debug.keystore" -storepass android
           curl -X POST -H "Authorization: Bearer ${{ secrets.DEPLOYGATE_TOKEN }}" -F file=@app/build/outputs/apk/fenix/release/app-fenix-arm64-v8a-release.apk https://deploygate.com/api/users/yogpstop/apps
           shred -u "$HOME/.android/debug.keystore"
