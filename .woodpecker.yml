@@ -26,10 +26,9 @@ steps:
       - echo "$SIGN_STORE_DATA" | base64 -d >"$HOME/.android/debug.keystore"
       - cd fenix
       - sed -zi 's/\.aboutConfigEnabled([^()]\+)/.aboutConfigEnabled(true)/' app/src/main/java/org/mozilla/fenix/gecko/GeckoProvider.kt
-      - sed -i "/org\.gradle\.jvmargs/s/=.*/=-Xmx1g -XX:+UseParallelGC/" gradle.properties
-      - echo "org.gradle.daemon=false" | tee -a gradle.properties
+      - sed -i "/org\.gradle\.jvmargs/{s/7g/2g/;s/6g/512m/}" gradle.properties
       - echo "autosignReleaseWithDebugKey" | tee -a local.properties
-      - ./gradlew assembleRelease
+      - ./gradlew --no-daemon -PversionName=${CI_COMMIT_REF##*-v} assembleRelease
       - 'curl -X POST -H "Authorization: Bearer $DEPLOYGATE_TOKEN" -F file=@app/build/outputs/apk/fenix/release/app-fenix-arm64-v8a-release.apk https://deploygate.com/api/users/yogpstop/apps'
       - shred -u "$HOME/.android/debug.keystore"
     secrets: [ sign_store_data, deploygate_token ]

@@ -1,0 +1,17 @@
+name: Tag
+on:
+  schedule:
+    - cron: '37 * * * *'
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-tags: true
+      - run: |
+          UPSTREAM=`git ls-remote --tags https://github.com/mozilla-mobile/firefox-android.git | awk '/fenix-v[0-9.]+$/{print $2}' | sort -Vr | head -1`
+          ! git rev-parse "$UPSTREAM" -- || exit 0
+          git tag "${UPSTREAM##*/}"
+          git push origin "$UPSTREAM"
