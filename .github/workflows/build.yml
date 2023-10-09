@@ -10,15 +10,17 @@ jobs:
     container:
       image: eclipse-temurin:17
     steps:
+      - name: Prepare
+        run: |
+          apt update
+          apt -y install --no-install-recommends unzip bzip2 git
       - name: Checkout
         uses: actions/checkout@v4
         with:
           repository: mozilla-mobile/firefox-android
       - name: Build
         run: |
-          export ANDROID_HOME=/woodpecker/android-sdk
-          apt update
-          apt -y install --no-install-recommends unzip bzip2 git
+          export ANDROID_HOME=$HOME/android-sdk
           wget -q -O commandlinetools-linux.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
           unzip -q commandlinetools-linux.zip -d "$ANDROID_HOME"
           mkdir "$ANDROID_HOME/licenses"
