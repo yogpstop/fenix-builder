@@ -28,7 +28,8 @@ jobs:
           echo 24333f8a63b6825ea9c5514f83c2829b004d1fee | tee "$ANDROID_HOME/licenses/android-sdk-license"
           mkdir -p "$HOME/.android"
           echo "${{ secrets.SIGN_STORE_DATA }}" | base64 -d >"$HOME/.android/debug.keystore"
-          git config --global --add safe.directory "${{ github.workspace }}"
+          cat "$HOME/.gitconfig" || :
+          git config --global --add safe.directory "$(pwd)"
           cd fenix
           sed -zi 's/\.aboutConfigEnabled([^()]\+)/.aboutConfigEnabled(true)/' app/src/main/java/org/mozilla/fenix/gecko/GeckoProvider.kt
           echo "org.gradle.daemon=false" | tee -a gradle.properties
