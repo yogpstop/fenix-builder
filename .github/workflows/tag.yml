@@ -9,6 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          token: ${{ secrets.GH_PAT }}
           fetch-tags: true
       - run: |
           UPSTREAM=`git ls-remote --tags https://github.com/mozilla-mobile/firefox-android.git | awk '/fenix-v[0-9.]+$/{print $2}' | sort -Vr | head -1`
