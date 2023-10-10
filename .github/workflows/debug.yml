@@ -9,16 +9,9 @@ jobs:
     steps:
       - name: Build
         run: |
+          sed -i "s:/root:$HOME:" /etc/passwd
           id
           getent passwd
           set
-          ls -ld ~ $HOME /root
-          ls -lA /root
-          mkdir -p "$HOME/.android"
-          echo "${{ secrets.SIGN_STORE_DATA }}" | base64 -d >"$HOME/.android/debug.keystore"
-          ls -ld "$HOME/.android/debug.keystore"
-          keytool -list -v -keystore "$HOME/.android/debug.keystore" -storepass android
-          mkdir -p "/root/.android"
-          echo "${{ secrets.SIGN_STORE_DATA }}" | base64 -d >"/root/.android/debug.keystore"
-          ls -ld "/root/.android/debug.keystore"
-          keytool -list -v -keystore "/root/.android/debug.keystore" -storepass android
+          ls -ld $HOME /root
+          ls -lA $HOME /root
